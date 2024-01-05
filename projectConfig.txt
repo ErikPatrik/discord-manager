@@ -1,0 +1,9 @@
+yarn init -y
+yarn install dotenv
+yarn add dotenv
+yarn add -D typescript ts-node ts-node-dev @types/node tsconfig-paths
+yarn add -D @types/express @types/cors
+yarn add prettier eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier eslint-plugin-prettier -D
+yarn add eslint-import-resolver-typescript eslint-plugin-import -D
+npx tsc --init
+yarn add nodemon
