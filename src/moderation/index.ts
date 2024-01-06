@@ -1,5 +1,5 @@
-import * as test from './discord-test'
-import * as ban from './ban'
+import * as test from './commands/discord-test'
+import * as ban from './commands/ban'
 
 export const commands = {
     test,
