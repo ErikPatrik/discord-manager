@@ -57,22 +57,22 @@ export async function execute(interaction: CommandInteraction) {
             const response = await interaction.reply({
                 content: `Are you sure you want to ban ${target.username} for reason: ${reason}?`,
                 components: [row],
-            });
+                ephemeral: true,
+            })
 
-            const collectorFilter = (i: any) => i.customId === ButtonId.Confirm || i.customId === ButtonId.Cancel;
+            const collectorFilter = (i: any) => i.customId === ButtonId.Confirm || i.customId === ButtonId.Cancel
             try {
-                const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 });
-
+                const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
                     if (confirmation.customId === 'confirm') {
-                        await interaction.guild?.members.ban(target, { reason });
-                        await confirmation.update({ content: `${target.username} has been banned for reason: ${reason}`, components: [] });
+                        await interaction.guild?.members.ban(target, { reason })
+                        await confirmation.update({ content: `${target.username} has been banned for reason: ${reason}`, components: [] })
                     } else if (confirmation.customId === 'cancel') {
-                        await confirmation.update({ content: 'Action cancelled', components: [] });
+                        await confirmation.update({ content: 'Action cancelled', components: [] })
                     }
 
             } catch (e) {
-                await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
+                await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] })
             }
         }
     } catch (error) {

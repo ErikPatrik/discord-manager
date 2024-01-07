@@ -296,6 +296,13 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/pretty-ms@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/@types/pretty-ms/-/pretty-ms-5.0.1.tgz"
+  integrity sha512-FFR4uj0p47Yq6JCrOt7DCaiUJIw7t9Vh7wwt3bF6qq99QRqjSH/doEGZsIIgZqhDmwjBObVBkrn0ICm1pY+mPg==
+  dependencies:
+    pretty-ms "*"
+
 "@types/qs@*":
   version "6.9.11"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.9.11.tgz"
@@ -1860,6 +1867,11 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
+parse-ms@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/parse-ms/-/parse-ms-3.0.0.tgz"
+  integrity sha512-Tpb8Z7r7XbbtBTrM9UhpkzzaMrqA2VXMT3YChzYltwV3P3pM6t8wl7TvpMnSTosz1aQAdVib7kdoys7vYOPerw==
+
 path-exists@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/path-exists/-/path-exists-4.0.0.tgz"
@@ -1906,6 +1918,13 @@ prettier@^3.1.1, prettier@>=3.0.0:
   version "3.1.1"
   resolved "https://registry.npmjs.org/prettier/-/prettier-3.1.1.tgz"
   integrity sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==
+
+pretty-ms@*, pretty-ms@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/pretty-ms/-/pretty-ms-8.0.0.tgz"
+  integrity sha512-ASJqOugUF1bbzI35STMBUpZqdfYKlJugy6JBziGi2EE+AL5JPJGSzvpeVXojxrr0ViUYoToUjb5kjSEGf7Y83Q==
+  dependencies:
+    parse-ms "^3.0.0"
 
 prop-types@^15.8.1:
   version "15.8.1"
