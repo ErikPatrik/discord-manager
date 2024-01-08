@@ -1,5 +1,4 @@
 yarn init -y
-yarn install dotenv
 yarn add dotenv
 yarn add -D typescript ts-node ts-node-dev @types/node tsconfig-paths
 yarn add -D express @types/express @types/cors

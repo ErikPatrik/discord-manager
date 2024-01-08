@@ -9,6 +9,7 @@ import db from './config/database/database'
 import { guildCreate } from './listeners/guildCreate'
 import { interactionCreate } from './listeners/interactionCreate'
 import express from 'express'
+import cors from 'cors'
 import logRoutes from './routes/log.route'
 import { config } from 'dotenv'
 
@@ -16,6 +17,13 @@ config()
 
 const app = express()
 const PORT = process.env.PORT_SERVER
+
+const corsOptions = {
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+    credentials: true,
+}
+
+app.use(cors(corsOptions))
 
 app.listen(PORT, () => {
     console.log(`Server running on the port ${PORT}`)
