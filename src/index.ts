@@ -8,6 +8,9 @@ import { commands } from './moderation'
 import { deployCommands } from './deploy-commands'
 import ready from './listeners/ready'
 import { createPrivateChannel } from './utils/createPrivateChannel'
+import db from './config/database/database'
+
+db()
 
 console.log('Bot GamerSafer starting...')
 

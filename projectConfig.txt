@@ -8,3 +8,9 @@ yarn add eslint-import-resolver-typescript eslint-plugin-import -D
 yarn add -D @types/pretty-ms
 npx tsc --init
 yarn add nodemon
+
+
+Database
+
+admin
+oiku8efM116xuivG

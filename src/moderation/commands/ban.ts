@@ -9,6 +9,7 @@ import {
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
 import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
+import { LogCategory } from '../../enums/LogCategory'
 
 export const data = new SlashCommandBuilder()
     .setName('ban')
@@ -74,13 +75,16 @@ export async function execute(interaction: CommandInteraction) {
                 const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
                     if (confirmation.customId === 'confirm') {
-                        await interaction.guild?.members.ban(target, { reason })
+                        const confirmBan = await interaction.guild?.members.ban(target, { reason })
                         await confirmation.update({ content: `${target.username} has been banned for reason: ${reason}`, components: [] })
 
-                        await sendLogToPrivateChannel(
-                            interaction,
-                            `User ${target} has been banned by ${interaction.user.tag} for reason: ${reason}`
-                        )
+                        if (confirmBan) {
+                            await sendLogToPrivateChannel(
+                                interaction,
+                                `User ${target} has been banned by ${interaction.user.tag} for reason: ${reason}`,
+                                LogCategory.BAN
+                            )
+                        }
                     } else if (confirmation.customId === 'cancel') {
                         await confirmation.update({ content: 'Action cancelled', components: [] })
                     }

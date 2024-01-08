@@ -9,6 +9,7 @@ import ms = require('ms')
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
 import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
+import { LogCategory } from '../../enums/LogCategory'
 
 export const data = new SlashCommandBuilder()
     .setName('temprole')
@@ -97,20 +98,31 @@ export async function execute(interaction: CommandInteraction) {
                     const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
                     if (confirmation.customId === 'confirm') {
-                        await target.roles.add(roleId)
+                        const addRole = await target.roles.add(roleId)
                         await interaction.editReply(`
                             ${target} has been successfully added to the function ${dataRole?.name} for ${ms(msDuration, { long: true })}\nReason: ${reason}
                         `)
 
-                        await sendLogToPrivateChannel(
-                            interaction,
-                            `User ${target} has been successfully added to the function ${dataRole?.name}`
-                        )
+                        if (addRole) {
+                            await sendLogToPrivateChannel(
+                                interaction,
+                                `User ${target} has been successfully added to the function ${dataRole?.name}`,
+                                LogCategory.TEMPORARY_ROLE_CHANGE
+                            )
+                        }
 
                         setTimeout(async () => {
-                            await target.roles.remove(roleId)
+                            const removeRole =  await target.roles.remove(roleId)
                             await interaction.editReply(`
-                            ${target} has been successfully remove to the role ${dataRole?.name}`)
+                            ${target} has been successfully removed to the role ${dataRole?.name}`)
+
+                            if (removeRole) {
+                                await sendLogToPrivateChannel(
+                                    interaction,
+                                    `User ${target} has been successfully removed to the function ${dataRole?.name}`,
+                                    LogCategory.TEMPORARY_ROLE_CHANGE
+                                )
+                            }
                         }, msDuration)
                     } else if (confirmation.customId === 'cancel') {
                         await confirmation.update({ content: 'Action cancelled', components: [] })

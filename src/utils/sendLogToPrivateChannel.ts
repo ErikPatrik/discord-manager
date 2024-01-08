@@ -1,8 +1,11 @@
 import { CommandInteraction, TextChannel, NewsChannel } from 'discord.js'
 import { PrivateChannelID } from '../constants/privateChannel'
 import { moderationChannelId } from './createPrivateChannel'
+import Log from '../models/log'
+import { ILog } from '../interfaces/ILog'
+import { LogCategory } from '../enums/LogCategory'
 
-export async function sendLogToPrivateChannel(interaction: CommandInteraction, log: string) {
+export async function sendLogToPrivateChannel(interaction: CommandInteraction, description: string, category: LogCategory) {
     try {
         const channelId = moderationChannelId || PrivateChannelID
 
@@ -19,13 +22,32 @@ export async function sendLogToPrivateChannel(interaction: CommandInteraction, l
         }
 
         logChannel.send({
-            content: log,
+            content: description,
         })
+
+        await saveLogDatabase(interaction, category, description)
     } catch (error) {
         console.error(error)
         await interaction.followUp({
             content: 'An error occurred while processing the command',
             ephemeral: true,
         })
+    }
+}
+
+async function saveLogDatabase(
+    interaction: CommandInteraction,
+    category: LogCategory,
+    description: string) {
+    try {
+        const newLog: ILog = new Log({
+            user: interaction.user.tag,
+            category,
+            description
+        })
+
+        await newLog.save()
+    } catch (error) {
+        console.error('Error to save log in Database:', error)
     }
 }

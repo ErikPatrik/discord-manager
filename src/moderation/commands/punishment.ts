@@ -10,6 +10,7 @@ import ms = require('ms')
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
 import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
+import { LogCategory } from '../../enums/LogCategory'
 
 export const data = new SlashCommandBuilder()
     .setName('punishment')
@@ -107,17 +108,27 @@ export async function execute(interaction: CommandInteraction) {
 
                     if (confirmation.customId === 'confirm') {
                         if (target.isCommunicationDisabled()) {
-                            await target.timeout(msDuration, reason)
+                            const updateTimeOut = await target.timeout(msDuration, reason)
                             await interaction.editReply(`${target}'s timeout has been updated to ${ms(msDuration, { long: true })}\nReason: ${reason}`)
+
+                            if (updateTimeOut) {
+                                await sendLogToPrivateChannel(
+                                    interaction,
+                                    `User ${target} has been punished by ${interaction.user.tag} for reason: ${reason}`,
+                                    LogCategory.PUNISHMENT
+                                )
+                            }
                         } else {
-                            await target.timeout(msDuration, reason)
-
-                            await sendLogToPrivateChannel(
-                                interaction,
-                                `User ${target} has been punished by ${interaction.user.tag} for reason: ${reason}`
-                            )
-
+                            const applyTimeOut = await target.timeout(msDuration, reason)
                             await interaction.editReply(`${target} was timed out for ${ms(msDuration, { long: true })}.\nReason: ${reason}`)
+
+                            if (applyTimeOut) {
+                                await sendLogToPrivateChannel(
+                                    interaction,
+                                    `User ${target} has been punished by ${interaction.user.tag} for reason: ${reason}`,
+                                    LogCategory.PUNISHMENT
+                                )
+                            }
                         }
                     }  else if (confirmation.customId === 'cancel') {
                         await confirmation.update({ content: 'Action cancelled', components: [] })
