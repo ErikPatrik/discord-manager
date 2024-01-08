@@ -5,7 +5,12 @@ import Log from '../models/log'
 import { ILog } from '../interfaces/ILog'
 import { LogCategory } from '../enums/LogCategory'
 
-export async function sendLogToPrivateChannel(interaction: CommandInteraction, description: string, category: LogCategory) {
+export async function sendLogToPrivateChannel(
+    interaction: CommandInteraction,
+    description: string,
+    category: LogCategory,
+    reason?: string,
+    duration?: string) {
     try {
         const channelId = moderationChannelId || PrivateChannelID
 
@@ -25,7 +30,7 @@ export async function sendLogToPrivateChannel(interaction: CommandInteraction, d
             content: description,
         })
 
-        await saveLogDatabase(interaction, category, description)
+        await saveLogDatabase(interaction, category, description, reason, duration)
     } catch (error) {
         console.error(error)
         await interaction.followUp({
@@ -38,12 +43,16 @@ export async function sendLogToPrivateChannel(interaction: CommandInteraction, d
 async function saveLogDatabase(
     interaction: CommandInteraction,
     category: LogCategory,
-    description: string) {
+    description: string,
+    reason?: string,
+    duration?: string) {
     try {
         const newLog: ILog = new Log({
             user: interaction.user.tag,
             category,
-            description
+            description,
+            reason,
+            duration
         })
 
         await newLog.save()

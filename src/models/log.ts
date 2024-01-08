@@ -13,6 +13,8 @@ const logSchema = new mongoose.Schema({
         required: true
     },
     description: String,
+    reason: String,
+    duration: String,
     timestamp: {
         type: Date,
         default: Date.now,

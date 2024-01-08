@@ -5,5 +5,7 @@ export interface ILog extends Document {
     user: string
     category: LogCategory
     description?: string
+    reason?: string
+    duration?: string
     timestamp: Date
 }
