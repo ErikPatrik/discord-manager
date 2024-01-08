@@ -5,10 +5,13 @@ import {
     CommandInteraction,
     PermissionFlagsBits,
     SlashCommandBuilder,
+    TextChannel,
 } from 'discord.js'
 import ms = require('ms')
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
+import { PrivateChannel, PrivateChannelID } from '../../constants/privateChannel'
+import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
 
 export const data = new SlashCommandBuilder()
     .setName('punishment')
@@ -21,7 +24,7 @@ export const data = new SlashCommandBuilder()
         .setRequired(true)
     )
     .addStringOption(option => option
-        .setName('timeout')
+        .setName('duration')
         .setDescription('Punishment time')
         .setRequired(true)
     )
@@ -47,9 +50,9 @@ export async function execute(interaction: CommandInteraction) {
 
         const user = interaction.options.getUser('user')
 
-        const timeoutOption = interaction.options.get('timeout')
-        const timeoutValue = timeoutOption?.value?.toString()
-        const msDuration = timeoutValue ? ms(timeoutValue) : 10000
+        const durationOption = interaction.options.get('duration')
+        const durationValue = durationOption?.value?.toString()
+        const msDuration = durationValue ? ms(durationValue) : 10000
 
         const reasonOption = interaction.options.get('reason')
         const reason = reasonOption?.value?.toString() ?? 'No reason provided'
@@ -107,6 +110,12 @@ export async function execute(interaction: CommandInteraction) {
                     if (confirmation.customId === 'confirm') {
                         if (target.isCommunicationDisabled()) {
                             await target.timeout(msDuration, reason)
+
+                            await sendLogToPrivateChannel(
+                                interaction,
+                                `User ${target} has been punished by ${interaction.user.tag} for reason: ${reason}`
+                            )
+
                             await interaction.editReply(`${target}'s timeout has been updated to ${ms(msDuration, { long: true })}\nReason: ${reason}`)
                         } else {
                             await target.timeout(msDuration, reason)

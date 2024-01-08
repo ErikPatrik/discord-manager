@@ -8,6 +8,7 @@ import {
 import ms = require('ms')
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
+import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
 
 export const data = new SlashCommandBuilder()
     .setName('temprole')
@@ -96,13 +97,18 @@ export async function execute(interaction: CommandInteraction) {
                     const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
                     if (confirmation.customId === 'confirm') {
-                        await interaction.guild?.members.cache.get(target.id)?.roles.add(roleId)
+                        await target.roles.add(roleId)
                         await interaction.editReply(`
                             ${target} has been successfully added to the function ${dataRole?.name} for ${ms(msDuration, { long: true })}\nReason: ${reason}
                         `)
 
+                        await sendLogToPrivateChannel(
+                            interaction,
+                            `User ${target} has been successfully added to the function ${dataRole?.name}`
+                        )
+
                         setTimeout(async () => {
-                            await interaction.guild?.members.cache.get(target.id)?.roles.remove(roleId)
+                            await target.roles.remove(roleId)
                             await interaction.editReply(`
                             ${target} has been successfully remove to the role ${dataRole?.name}`)
                         }, msDuration)

@@ -2,8 +2,8 @@ import { ColorResolvable, CommandInteraction, EmbedBuilder } from "discord.js";
 
 export async function sendEmbedMessage(
     color: ColorResolvable,
-    description: string, interaction:
-    CommandInteraction) {
+    description: string,
+    interaction: CommandInteraction) {
         const embed = new EmbedBuilder()
         .setColor(color)
         .setDescription(description)
