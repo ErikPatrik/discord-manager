@@ -48,14 +48,12 @@ export async function execute(interaction: CommandInteraction) {
         const reasonOption = interaction.options.get('reason')
         const reason = reasonOption?.value?.toString() ?? 'No reason provided'
 
-        if (!user || !reason) {
-            return
-        }
+        if (!user || user.bot || interaction.user.id === user.id) {
+            const errorMessage = user ? (user.bot ? 'You cannot punish Bots.' : 'You cannot punish yourself.') : 'Invalid target.'
 
-        if (user.bot) {
             return sendEmbedMessage(
                 ColorEmbedMessage.WARNING,
-                'You cannot punish Bots.',
+                errorMessage,
                 interaction
             )
         }
