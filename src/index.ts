@@ -10,12 +10,15 @@ import { guildCreate } from './listeners/guildCreate'
 import { interactionCreate } from './listeners/interactionCreate'
 import express from 'express'
 import logRoutes from './routes/log.route'
+import { config } from 'dotenv'
+
+config()
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT_SERVER
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`)
+    console.log(`Server running on the port ${PORT}`)
 })
 
 app.use('/api', logRoutes)
