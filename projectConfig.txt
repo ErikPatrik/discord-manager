@@ -6,6 +6,7 @@ yarn add -D @types/express @types/cors
 yarn add prettier eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier eslint-plugin-prettier -D
 yarn add eslint-import-resolver-typescript eslint-plugin-import -D
 yarn add -D @types/pretty-ms
+yarn add -D jest ts-jest @types/jest
 npx tsc --init
 yarn add nodemon
 
