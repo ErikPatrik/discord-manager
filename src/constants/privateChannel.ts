@@ -1,1 +1,1 @@
-export const PrivateChannelID: string = '1193755075538071552'
+export const PrivateChannelID: string = '1193905397619245096'

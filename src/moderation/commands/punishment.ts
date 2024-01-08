@@ -5,12 +5,10 @@ import {
     CommandInteraction,
     PermissionFlagsBits,
     SlashCommandBuilder,
-    TextChannel,
 } from 'discord.js'
 import ms = require('ms')
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
-import { PrivateChannel, PrivateChannelID } from '../../constants/privateChannel'
 import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
 
 export const data = new SlashCommandBuilder()
@@ -110,15 +108,15 @@ export async function execute(interaction: CommandInteraction) {
                     if (confirmation.customId === 'confirm') {
                         if (target.isCommunicationDisabled()) {
                             await target.timeout(msDuration, reason)
+                            await interaction.editReply(`${target}'s timeout has been updated to ${ms(msDuration, { long: true })}\nReason: ${reason}`)
+                        } else {
+                            await target.timeout(msDuration, reason)
 
                             await sendLogToPrivateChannel(
                                 interaction,
                                 `User ${target} has been punished by ${interaction.user.tag} for reason: ${reason}`
                             )
 
-                            await interaction.editReply(`${target}'s timeout has been updated to ${ms(msDuration, { long: true })}\nReason: ${reason}`)
-                        } else {
-                            await target.timeout(msDuration, reason)
                             await interaction.editReply(`${target} was timed out for ${ms(msDuration, { long: true })}.\nReason: ${reason}`)
                         }
                     }  else if (confirmation.customId === 'cancel') {
@@ -127,6 +125,7 @@ export async function execute(interaction: CommandInteraction) {
 
                     await interaction.editReply({ components: [] })
                 } catch (error) {
+                    console.log('aqui', error)
                     await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] })
                 }
             }

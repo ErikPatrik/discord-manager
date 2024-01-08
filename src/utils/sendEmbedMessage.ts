@@ -1,4 +1,4 @@
-import { ColorResolvable, CommandInteraction, EmbedBuilder } from "discord.js";
+import { ColorResolvable, CommandInteraction, EmbedBuilder } from 'discord.js'
 
 export async function sendEmbedMessage(
     color: ColorResolvable,

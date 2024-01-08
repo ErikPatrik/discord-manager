@@ -2,11 +2,12 @@ import 'dotenv/config'
 import {
     Client,
     GatewayIntentBits,
-} from 'discord.js';
+} from 'discord.js'
 import { configDiscord } from './config/discord'
-import { commands } from './moderation';
-import { deployCommands } from './deploy-commands';
-import ready from './listeners/ready';
+import { commands } from './moderation'
+import { deployCommands } from './deploy-commands'
+import ready from './listeners/ready'
+import { createPrivateChannel } from './utils/createPrivateChannel'
 
 console.log('Bot GamerSafer starting...')
 
@@ -22,13 +23,15 @@ const client = new Client({
     ]
 })
 
-ready(client)
-
-client.on("guildCreate", async (guild) => {
+client.on('guildCreate', async (guild) => {
     await deployCommands({ guildId: guild.id })
+
+    await createPrivateChannel(guild, client)
 })
 
-client.on("interactionCreate", async (interaction) => {
+ready(client)
+
+client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) {
         return
     }
