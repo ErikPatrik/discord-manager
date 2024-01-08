@@ -39,16 +39,6 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: CommandInteraction) {
     try {
-        const confirm = new ButtonBuilder()
-            .setCustomId('confirm')
-            .setLabel('Confirm')
-            .setStyle(ButtonStyle.Danger)
-
-        const cancel = new ButtonBuilder()
-            .setCustomId('cancel')
-            .setLabel('Cancel')
-            .setStyle(ButtonStyle.Secondary)
-
         const user = interaction.options.getUser('user')
 
         const durationOption = interaction.options.get('duration')
@@ -58,7 +48,7 @@ export async function execute(interaction: CommandInteraction) {
         const reasonOption = interaction.options.get('reason')
         const reason = reasonOption?.value?.toString() ?? 'No reason provided'
 
-        if (!user) {
+        if (!user || !reason) {
             return
         }
 
@@ -69,6 +59,16 @@ export async function execute(interaction: CommandInteraction) {
                 interaction
             )
         }
+
+        const confirm = new ButtonBuilder()
+            .setCustomId('confirm')
+            .setLabel('Confirm')
+            .setStyle(ButtonStyle.Danger)
+
+        const cancel = new ButtonBuilder()
+            .setCustomId('cancel')
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Secondary)
 
         const member = interaction.guild?.members.cache.get(interaction.user.id)
         const target = interaction.guild?.members.cache.get(user.id)
