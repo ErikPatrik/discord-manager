@@ -3,7 +3,6 @@ import {
     ButtonBuilder,
     ButtonStyle,
     CommandInteraction,
-    PermissionFlagsBits,
     SlashCommandBuilder,
 } from 'discord.js'
 import ms = require('ms')
@@ -11,23 +10,27 @@ import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
 
 export const data = new SlashCommandBuilder()
-    .setName('punishment')
-    .setDescription('Punish a user')
-    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
+    .setName('temprole')
+    .setDescription('Temporary role to user')
     .setDMPermission(false)
     .addUserOption(option => option
         .setName('user')
-        .setDescription('Member you wish punish for a time')
+        .setDescription('Member you wish change the role for a time')
+        .setRequired(true)
+    )
+    .addRoleOption(option => option
+        .setName('role')
+        .setDescription('The role to add the user')
         .setRequired(true)
     )
     .addStringOption(option => option
         .setName('timeout')
-        .setDescription('Punishment time')
-        .setRequired(true)
+        .setDescription('Time with role change')
+        .setRequired(false)
     )
     .addStringOption(option => option
         .setName('reason')
-        .setDescription('Reason for Punish a member')
+        .setDescription('Reason for change the role')
         .setRequired(false)
         .setMinLength(1)
         .setMaxLength(255)
@@ -38,7 +41,7 @@ export async function execute(interaction: CommandInteraction) {
         const confirm = new ButtonBuilder()
             .setCustomId('confirm')
             .setLabel('Confirm')
-            .setStyle(ButtonStyle.Danger)
+            .setStyle(ButtonStyle.Primary)
 
         const cancel = new ButtonBuilder()
             .setCustomId('cancel')
@@ -47,9 +50,12 @@ export async function execute(interaction: CommandInteraction) {
 
         const user = interaction.options.getUser('user')
 
+        const roleOption = interaction.options.get('role')
+        const roleId = roleOption?.value?.toString() ?? 'No role provided'
+
         const timeoutOption = interaction.options.get('timeout')
         const timeoutValue = timeoutOption?.value?.toString()
-        const msDuration = timeoutValue ? ms(timeoutValue) : 10000
+        const msDuration = timeoutValue ? ms(timeoutValue) : 30000
 
         const reasonOption = interaction.options.get('reason')
         const reason = reasonOption?.value?.toString() ?? 'No reason provided'
@@ -58,43 +64,28 @@ export async function execute(interaction: CommandInteraction) {
             if (user.bot) {
                 return sendEmbedMessage(
                     '#ff0000',
-                    'You cannot punish Bots.',
+                    'You cannot change the bots role.',
                     interaction
                 )
             }
 
-            const member = interaction.guild?.members.cache.get(interaction.user.id)
             const target = interaction.guild?.members.cache.get(user.id)
+            const dataRole = interaction.guild?.roles.cache.get(roleId)
 
-            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm)
-
-            if (member && target) {
-                if (member.roles.highest.position > target.roles.highest.position) {
+            if (target) {
+                const checkSameRole = target.roles.cache.has(roleId)
+                if (checkSameRole) {
                     return sendEmbedMessage(
                         '#ff0000',
-                        'You cannot punish someone with a higher role than you.',
+                        `User ${target} already has the role ${dataRole?.name}`,
                         interaction
                     )
                 }
 
-                if (isNaN(msDuration)) {
-                    return sendEmbedMessage(
-                        '#ff0000',
-                        'Please provide a valid timeout duration.',
-                        interaction
-                    )
-                }
-
-                if (msDuration < 5000 || msDuration > 2.419e9) {
-                    return sendEmbedMessage(
-                        '#ff0000',
-                        'Timeout duration cannot be less than 5 seconds or more than 28 days.',
-                        interaction
-                    )
-                }
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm)
 
                 const response = await interaction.reply({
-                    content: `Are you sure you want to punish ${target} for reason: ${reason}?`,
+                    content: `Are you sure you want to add ${target} to the role ${dataRole?.name} for reason: ${reason}?`,
                     components: [row],
                     ephemeral: true,
                 })
@@ -105,19 +96,23 @@ export async function execute(interaction: CommandInteraction) {
                     const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
                     if (confirmation.customId === 'confirm') {
-                        if (target.isCommunicationDisabled()) {
-                            await target.timeout(msDuration, reason)
-                            await interaction.editReply(`${target}'s timeout has been updated to ${ms(msDuration, { long: true })}\nReason: ${reason}`)
-                        } else {
-                            await target.timeout(msDuration, reason)
-                            await interaction.editReply(`${target} was timed out for ${ms(msDuration, { long: true })}.\nReason: ${reason}`)
-                        }
-                    }  else if (confirmation.customId === 'cancel') {
+                        await interaction.guild?.members.cache.get(target.id)?.roles.add(roleId)
+                        await interaction.editReply(`
+                            ${target} has been successfully added to the function ${dataRole?.name} for ${ms(msDuration, { long: true })}\nReason: ${reason}
+                        `)
+
+                        setTimeout(async () => {
+                            await interaction.guild?.members.cache.get(target.id)?.roles.remove(roleId)
+                            await interaction.editReply(`
+                            ${target} has been successfully remove to the role ${dataRole?.name}`)
+                        }, msDuration)
+                    } else if (confirmation.customId === 'cancel') {
                         await confirmation.update({ content: 'Action cancelled', components: [] })
                     }
 
                     await interaction.editReply({ components: [] })
                 } catch (error) {
+                    console.log(error)
                     await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] })
                 }
             }

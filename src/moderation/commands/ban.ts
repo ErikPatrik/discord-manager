@@ -6,11 +6,8 @@ import {
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from 'discord.js'
-
-enum ButtonId {
-    Confirm = 'confirm',
-    Cancel = 'cancel',
-}
+import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
+import { ActionButtons } from '../../enums/ActionButtons'
 
 export const data = new SlashCommandBuilder()
     .setName('ban')
@@ -34,7 +31,7 @@ export async function execute(interaction: CommandInteraction) {
     try {
         const confirm = new ButtonBuilder()
             .setCustomId('confirm')
-            .setLabel('Confirm Ban')
+            .setLabel('Confirm')
             .setStyle(ButtonStyle.Danger)
 
         const cancel = new ButtonBuilder()
@@ -44,14 +41,25 @@ export async function execute(interaction: CommandInteraction) {
 
         const target = interaction.options.getUser('target')
         const reasonOption = interaction.options.get('reason')
-        const reason = reasonOption?.value?.toString() ?? 'No reason provided.'
+        const reason = reasonOption?.value?.toString() ?? 'No reason provided'
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm)
 
         if (target) {
+            if (target.bot) {
+                return sendEmbedMessage(
+                    '#ff0000',
+                    'You cannot ban Bots.',
+                    interaction
+                )
+            }
+
             if (interaction.user.id === target.id) {
-                await interaction.editReply(`You can't Ban yourself`)
-                return
+                return sendEmbedMessage(
+                    '#ff0000',
+                    'You cannot ban yourself.',
+                    interaction
+                )
             }
 
             const response = await interaction.reply({
@@ -60,7 +68,7 @@ export async function execute(interaction: CommandInteraction) {
                 ephemeral: true,
             })
 
-            const collectorFilter = (i: any) => i.customId === ButtonId.Confirm || i.customId === ButtonId.Cancel
+            const collectorFilter = (i: any) => i.customId === ActionButtons.Confirm || i.customId === ActionButtons.Cancel
             try {
                 const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
