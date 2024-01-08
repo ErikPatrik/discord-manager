@@ -5,11 +5,13 @@ import {
     CommandInteraction,
     PermissionFlagsBits,
     SlashCommandBuilder,
+    User,
 } from 'discord.js'
 import { sendEmbedMessage } from '../../utils/sendEmbedMessage'
 import { ActionButtons } from '../../enums/ActionButtons'
 import { sendLogToPrivateChannel } from '../../utils/sendLogToPrivateChannel'
 import { LogCategory } from '../../enums/LogCategory'
+import { ColorEmbedMessage } from '../../enums/ColorEmbedMessage'
 
 export const data = new SlashCommandBuilder()
     .setName('ban')
@@ -31,6 +33,20 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: CommandInteraction) {
     try {
+        const target = interaction.options.getUser('target')
+        const reasonOption = interaction.options.get('reason')
+        const reason = reasonOption?.value?.toString() ?? 'No reason provided'
+
+        if (!target || target.bot || interaction.user.id === target.id) {
+            const errorMessage = target ? (target.bot ? 'You cannot ban Bots.' : 'You cannot ban yourself.') : 'Invalid target.'
+
+            return sendEmbedMessage(
+                ColorEmbedMessage.WARNING,
+                errorMessage,
+                interaction
+            )
+        }
+
         const confirm = new ButtonBuilder()
             .setCustomId('confirm')
             .setLabel('Confirm')
@@ -41,57 +57,25 @@ export async function execute(interaction: CommandInteraction) {
             .setLabel('Cancel')
             .setStyle(ButtonStyle.Secondary)
 
-        const target = interaction.options.getUser('target')
-        const reasonOption = interaction.options.get('reason')
-        const reason = reasonOption?.value?.toString() ?? 'No reason provided'
-
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm)
 
-        if (target) {
-            if (target.bot) {
-                return sendEmbedMessage(
-                    '#ff0000',
-                    'You cannot ban Bots.',
-                    interaction
-                )
-            }
+        const response = await interaction.reply({
+            content: `Are you sure you want to ban ${target.username} for reason: ${reason}?`,
+            components: [row],
+            ephemeral: true,
+        })
 
-            if (interaction.user.id === target.id) {
-                return sendEmbedMessage(
-                    '#ff0000',
-                    'You cannot ban yourself.',
-                    interaction
-                )
-            }
+        const collectorFilter = (i: any) => i.customId === ActionButtons.Confirm || i.customId === ActionButtons.Cancel
+        try {
+            const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
 
-            const response = await interaction.reply({
-                content: `Are you sure you want to ban ${target.username} for reason: ${reason}?`,
-                components: [row],
-                ephemeral: true,
-            })
-
-            const collectorFilter = (i: any) => i.customId === ActionButtons.Confirm || i.customId === ActionButtons.Cancel
-            try {
-                const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
-
-                    if (confirmation.customId === 'confirm') {
-                        const confirmBan = await interaction.guild?.members.ban(target, { reason })
-                        await confirmation.update({ content: `${target.username} has been banned for reason: ${reason}`, components: [] })
-
-                        if (confirmBan) {
-                            await sendLogToPrivateChannel(
-                                interaction,
-                                `User ${target} has been banned by ${interaction.user.tag} for reason: ${reason}`,
-                                LogCategory.BAN
-                            )
-                        }
-                    } else if (confirmation.customId === 'cancel') {
-                        await confirmation.update({ content: 'Action cancelled', components: [] })
-                    }
-
-            } catch (e) {
-                await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] })
-            }
+                if (confirmation.customId === 'confirm') {
+                    await handleBanConfirmation(interaction, target, reason)
+                } else if (confirmation.customId === 'cancel') {
+                    await confirmation.update({ content: 'Action cancelled', components: [] })
+                }
+        } catch (e) {
+            await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] })
         }
     } catch (error) {
         console.error(error)
@@ -99,5 +83,19 @@ export async function execute(interaction: CommandInteraction) {
             content: 'An error occurred while processing the command.',
             ephemeral: true,
         })
+    }
+}
+
+async function handleBanConfirmation(interaction: CommandInteraction, target: User, reason: string) {
+    const confirmBan = await interaction.guild?.members.ban(target, { reason })
+
+    if (confirmBan) {
+        await interaction.editReply({ content: `${target.username} has been banned for reason: ${reason}`, components: [] })
+        await sendLogToPrivateChannel(
+            interaction,
+            `User ${target} has been banned by ${interaction.user.tag} for reason: ${reason}`,
+            LogCategory.BAN,
+            reason,
+        )
     }
 }
