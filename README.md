@@ -40,11 +40,34 @@ npm run dev // npm run start
 
 It is important to emphasize the creation of a .env file at the root of your project, where it should contain the following variables:
 
+```bash
 DISCORD_TOKEN=
 DISCORD_CLIENT_ID=
 MONGO_USER=
 MONGO_PASS=
 MONGO_URI=
 PORT_SERVER=
+```
 
-Now your bot is ready to be added to the Discord server!
+<h3>The bot comes equipped with several functionalities to enhance server management and user interactions. Here are some of the key features:</h3>
+
+# Banishment:
+
+- Command: `/ban`
+- Description: Bans a user from the server, allowing the addition of a comment for reference.
+
+# Punishment:
+
+- Command: `/punishment`
+- Description: Applies a temporary punishment to a server user for a specified duration. Users can also include a comment related to the punishment.
+
+# User Role Change:
+
+- Command: `/temprole`
+- Description: Temporarily changes the role of a server user. Users can provide a comment regarding the user's role change.
+
+# Logging System:
+
+- Details: Upon adding the bot to a server, it automatically creates a private channel named "moderation." This channel serves as a centralized location to log and record all actions taken within the server, ensuring the moderation team stays informed.
+
+These functionalities aim to streamline administrative tasks, improve member-server interactions, and provide a more personalized experience for server members. The project is designed to serve as a foundation, and additional features can be implemented in the future for further enhancement.
