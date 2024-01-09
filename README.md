@@ -20,6 +20,7 @@ Additionally, modern asynchronous programming techniques will be implemented to 
 - Node.js (v18)
 - Express.js
 - Typescript
+- Discord.js
 - Jest
 - MongoDB / Mongoose
 
