@@ -25,6 +25,18 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+app.get('/', (req, res) => {
+    const discordProject = {
+        name: 'My Discord Project',
+        description: 'An amazing bot for managing Discord servers.',
+        author: 'Erik',
+        version: '1.0.0',
+        repository: 'https://github.com/ErikPatrik/discord-manager',
+    }
+
+    res.json(discordProject)
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on the port ${PORT}`)
 })
