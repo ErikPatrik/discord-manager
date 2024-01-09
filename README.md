@@ -71,3 +71,10 @@ PORT_SERVER=
 - Details: Upon adding the bot to a server, it automatically creates a private channel named "moderation." This channel serves as a centralized location to log and record all actions taken within the server, ensuring the moderation team stays informed.
 
 These functionalities aim to streamline administrative tasks, improve member-server interactions, and provide a more personalized experience for server members. The project is designed to serve as a foundation, and additional features can be implemented in the future for further enhancement.
+
+# Pictures
+
+![Example 1](./images/example_1.jpeg)
+![Example 2](./images/example_2.jpeg)
+![Example 2](./images/example_3.jpeg)
+![Example 3](./images/example_4.jpeg)
