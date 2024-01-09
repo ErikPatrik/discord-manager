@@ -50,24 +50,42 @@ MONGO_URI=
 PORT_SERVER=
 ```
 
+# Added bot to your server
+
+Copy the following link, paste it into your Discord server, and click on it; the bot will be invited.
+
+<h1>Important 1</h1>
+
+When adding the bot, you must change its role to the highest role in the server, as shown in the examples.
+
+![Role change 1](./images/role_change_1.jpeg)
+
+For this:
+
+![Role change 2](./images/role_change_2.jpeg)
+
+<h1>Important 2</h1>
+
+Also, there may be "caches" from Discord itself, so if the "moderation" channel or any command does not appear immediately, it will appear shortly (you can try providing a command like /ban, for example).
+
 <h3>The bot comes equipped with several functionalities to enhance server management and user interactions. Here are some of the key features:</h3>
 
-# Banishment:
+# Banishment
 
 - Command: `/ban`
 - Description: Bans a user from the server, allowing the addition of a comment for reference.
 
-# Punishment:
+# Punishment
 
 - Command: `/punishment`
 - Description: Applies a temporary punishment to a server user for a specified duration. Users can also include a comment related to the punishment.
 
-# User Role Change:
+# User Role Change
 
 - Command: `/temprole`
 - Description: Temporarily changes the role of a server user. Users can provide a comment regarding the user's role change.
 
-# Logging System:
+# Logging System
 
 - Details: Upon adding the bot to a server, it automatically creates a private channel named "moderation." This channel serves as a centralized location to log and record all actions taken within the server, ensuring the moderation team stays informed.
 
