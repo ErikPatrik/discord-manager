@@ -91,7 +91,9 @@ Also, there may be "caches" from Discord itself, so if the "moderation" channel 
 
 These functionalities aim to streamline administrative tasks, improve member-server interactions, and provide a more personalized experience for server members. The project is designed to serve as a foundation, and additional features can be implemented in the future for further enhancement.
 
-# Pictures
+Each user interaction will also be saved in the MongoDB database.
+
+# Images of the bot in use
 
 ![Example 1](./images/example_1.jpeg)
 ![Example 2](./images/example_2.jpeg)
