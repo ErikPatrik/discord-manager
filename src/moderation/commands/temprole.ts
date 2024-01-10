@@ -139,7 +139,7 @@ async function handleRoleConfirmation(
     `)
 
     if (addRole) {
-        await sendLogForTemporaryRoleChange(interaction, target, roleName, reason, descriptionDuration)
+        await sendLogForTemporaryRoleChange(interaction, target.displayName, roleName, reason, descriptionDuration)
     }
 
     setTimeout(async () => {
@@ -149,14 +149,14 @@ async function handleRoleConfirmation(
         `)
 
         if (removeRole) {
-            await sendLogForTemporaryRoleChange(interaction, target, roleName, reason, descriptionDuration)
+            await sendLogForTemporaryRoleChange(interaction, target.displayName, roleName, reason, descriptionDuration)
         }
     }, timeout)
 }
 
 async function sendLogForTemporaryRoleChange(
     interaction: CommandInteraction,
-    target: any,
+    target: string,
     roleName: string,
     reason: string,
     descriptionDuration: string) {
