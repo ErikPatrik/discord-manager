@@ -3,14 +3,14 @@ import {
     Client,
     GatewayIntentBits,
 } from 'discord.js'
-import { configDiscord } from './config/discord'
-import ready from './listeners/ready'
-import db from './config/database/database'
-import { guildCreate } from './listeners/guildCreate'
-import { interactionCreate } from './listeners/interactionCreate'
+import { configDiscord } from '../config/discord/variable'
+import ready from '../listeners/ready'
+import db from '../config/database/database'
+import { guildCreate } from '../listeners/guildCreate'
+import { interactionCreate } from '../listeners/interactionCreate'
 import express from 'express'
 import cors from 'cors'
-import logRoutes from './routes/log.route'
+import logRoutes from '../routes/log.route'
 import { config } from 'dotenv'
 
 config()

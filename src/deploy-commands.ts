@@ -1,5 +1,5 @@
 import { REST, Routes } from 'discord.js'
-import { configDiscord } from './config/discord'
+import { configDiscord } from './config/discord/variable'
 import { commands } from './moderation'
 import { DeployCommandsProps } from './types/DeployCommand';
 
