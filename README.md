@@ -56,6 +56,10 @@ Copy the following link, paste it into your Discord server, and click on it; the
 
 [Bot](https://discord.com/api/oauth2/authorize?client_id=1192814832936829029&permissions=8&scope=bot+applications.commands)
 
+Example:
+
+![Add bot](./images/add_bot.jpeg)
+
 <h1>Important 1</h1>
 
 When adding the bot, you must change its role to the highest role in the server, as shown in the examples.
