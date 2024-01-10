@@ -54,6 +54,8 @@ PORT_SERVER=
 
 Copy the following link, paste it into your Discord server, and click on it; the bot will be invited.
 
+[Bot](https://discord.com/api/oauth2/authorize?client_id=1192814832936829029&permissions=8&scope=bot+applications.commands)
+
 <h1>Important 1</h1>
 
 When adding the bot, you must change its role to the highest role in the server, as shown in the examples.
@@ -74,16 +76,28 @@ Also, there may be "caches" from Discord itself, so if the "moderation" channel 
 
 - Command: `/ban`
 - Description: Bans a user from the server, allowing the addition of a comment for reference.
+- Options:
+    - User: discord user
+    - Reason (ptional): reason to ban a user
 
 # Punishment
 
 - Command: `/punishment`
 - Description: Applies a temporary punishment to a server user for a specified duration. Users can also include a comment related to the punishment.
+- Options:
+    - User: discord user
+    - Duration: duration the user will be punished. Examples: 1d, 1min, 3h, 20d
+    - Reason (optional): reason to punish a user
 
 # User Role Change
 
 - Command: `/temprole`
 - Description: Temporarily changes the role of a server user. Users can provide a comment regarding the user's role change.
+- Options:
+    - User: discord user
+    - Role: new role
+    - Duration (optional): time when the user will have the new role. If not informed, the default time is 30s. Examples: 1d, 1min, 3h, 20d
+    - Reason (optional): reason for changing a user role
 
 # Logging System
 
